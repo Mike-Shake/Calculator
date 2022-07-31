@@ -93,6 +93,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             break;
             case R.id.close: {
+                if(parStack.isEmpty()){
+                    break;
+                }
                 if (textviewContent.equals("")) {
                     break;
                 }

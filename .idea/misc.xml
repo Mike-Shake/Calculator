@@ -5,7 +5,9 @@
       <map>
         <entry key="..\:/DerryProject/c3/app/src/main/res/drawable/selector_gray1.xml" value="0.1855" />
         <entry key="..\:/DerryProject/c3/app/src/main/res/drawable/selector_gray3.xml" value="0.1855" />
+        <entry key="..\:/DerryProject/c3/app/src/main/res/drawable/shape_rectangle_darkgray.xml" value="0.1855" />
         <entry key="..\:/DerryProject/c3/app/src/main/res/drawable/shape_rectangle_gray1.xml" value="0.1855" />
+        <entry key="..\:/DerryProject/c3/app/src/main/res/drawable/shape_rectangle_gray2.xml" value="0.1855" />
         <entry key="..\:/DerryProject/c3/app/src/main/res/drawable/shape_rectangle_lightgray.xml" value="0.1855" />
         <entry key="..\:/DerryProject/c3/app/src/main/res/drawable/shape_rectangle_orange.xml" value="0.1855" />
         <entry key="..\:/DerryProject/c3/app/src/main/res/layout/activity_main.xml" value="0.26621847886098404" />
