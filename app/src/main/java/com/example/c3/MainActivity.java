@@ -241,6 +241,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.cls:
                 textviewContent = "";
+                while(!parStack.isEmpty()){
+                    parStack.pop();
+                }
                 input.setText(textviewContent);
                 break;
             case R.id.equator:
@@ -250,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         || (textviewContent.charAt(textviewContent.length() - 1) == '/')
                         || (textviewContent.charAt(textviewContent.length() - 1) == '+'))
                 {
-                    textviewContent=textviewContent.substring(textviewContent.length()-1);
+                    textviewContent=textviewContent.substring(0,textviewContent.length()-1);
                 }
                 while(!parStack.isEmpty()){
                     textviewContent+=")";
