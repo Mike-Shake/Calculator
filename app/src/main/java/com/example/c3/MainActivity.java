@@ -7,13 +7,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.nio.channels.AlreadyBoundException;
 import java.util.Stack;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private TextView input;
     Character dig = '0';
-    Boolean opened = false;
-    Boolean add_min = false;
     private boolean flag=false;
     Button zero, one, two, three, four, five, six, seven, eight, nine, close, open, del, sub, add, mul, cls, spot, equator, div;
 
@@ -76,21 +75,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Character dig = '0';
         String textviewContent = input.getText().toString();
         switch (v.getId()) {
-            case R.id.open: {
-                if (textviewContent.equals("")) {
+            case R.id.open:
+                if(textviewContent.length()!=0&&(textviewContent.charAt(textviewContent.length()-1)>='0'&&textviewContent.charAt(textviewContent.length()-1)<='9')){
                     parStack.push('(');
-                    input.setText(textviewContent + "(");
-                    flag=false;
-                    opened = true;
+                    textviewContent+="*(";
+                    input.setText(textviewContent);
                     break;
                 }
-                char previousChar = textviewContent.charAt(textviewContent.length() - 1);
-                if (previousChar == '+' || previousChar == '-' || previousChar == '*' || previousChar == '/') {
-                    parStack.push('(');
-                    input.setText(textviewContent + "(");
-                    opened = true;
-                }
-            }
+                textviewContent+='(';
+                parStack.push('(');
+                input.setText(textviewContent);
+                flag=false;
             break;
             case R.id.close: {
                 if(parStack.isEmpty()){
@@ -129,6 +124,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.seven:
             case R.id.eight:
             case R.id.nine:
+                if(textviewContent.equals("错误")){
+                    textviewContent="";
+                }
                 input.setText(textviewContent + ((Button) v).getText());
                 flag=true;
                 break;
@@ -197,6 +195,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 input.setText(textviewContent);
                 break;
             case R.id.sub:
+                if(textviewContent.length()!=0&&textviewContent.charAt(textviewContent.length()-1)=='('){
+                    textviewContent+="-";
+                    input.setText(textviewContent);
+                    break;
+                }
+                if(textviewContent.length()!=0&&
+                        ((textviewContent.charAt(textviewContent.length()-1)=='*')
+                        ||(textviewContent.charAt(textviewContent.length()-1)=='-')
+                        ||(textviewContent.charAt(textviewContent.length()-1)=='/')
+                        ||textviewContent.charAt(textviewContent.length()-1)=='+'))
+                {
+                    textviewContent+="(-";
+                    parStack.push('(');
+                    input.setText(textviewContent);
+                    break;
+                }
                 if(textviewContent.length()!=0&&flag==false){
                     break;
                 }
@@ -207,35 +221,54 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     input.setText(textviewContent);
                     break;
                 }
+
                 textviewContent += "-";
                 flag=false;
                 input.setText(textviewContent);
                 break;
             case R.id.del:
-                if (!textviewContent.equals("")) {
+                if(textviewContent.length()!=0) {
+                    if ((textviewContent.charAt(textviewContent.length() - 1) == '*')
+                            || (textviewContent.charAt(textviewContent.length() - 1) == '-')
+                            || (textviewContent.charAt(textviewContent.length() - 1) == '/')
+                            || (textviewContent.charAt(textviewContent.length() - 1) == '+'))
+                    {
+                        flag = true;
+                    }
                     textviewContent = textviewContent.substring(0, textviewContent.length() - 1);
                     input.setText(textviewContent);
                 }
                 break;
             case R.id.cls:
                 textviewContent = "";
-                input.setText("");
+                input.setText(textviewContent);
                 break;
             case R.id.equator:
-                if (parStack.isEmpty()) {
-                    if (!textviewContent.equals("")) {
-                        try {
-                            ExpressionTool expressionTool = new ExpressionTool();
-                            Result result = null;
-                            result = expressionTool.SuffixesToSuffixes(textviewContent);
-                            input.setText(String.valueOf((result.getNumberStack()).peek()));
-                        } catch (CalException e) {
-                            input.setText("错误");
-                            break;
-                        }
+                if(textviewContent.length()!=0&&
+                        (textviewContent.charAt(textviewContent.length() - 1) == '*')
+                        || (textviewContent.charAt(textviewContent.length() - 1) == '-')
+                        || (textviewContent.charAt(textviewContent.length() - 1) == '/')
+                        || (textviewContent.charAt(textviewContent.length() - 1) == '+'))
+                {
+                    textviewContent=textviewContent.substring(textviewContent.length()-1);
+                }
+                while(!parStack.isEmpty()){
+                    textviewContent+=")";
+                    parStack.pop();
+                }
+                if (!textviewContent.equals("")) {
+                    try {
+                        ExpressionTool expressionTool = new ExpressionTool();
+                        Result result = null;
+                        result = expressionTool.SuffixesToSuffixes(textviewContent);
+
+                        input.setText((result.getNumberStack()).peek().stripTrailingZeros().toPlainString());
+                    } catch (CalException e) {
+                        input.setText("错误");
+                        break;
+                    }catch (ArithmeticException e){
+                        input.setText("错误");
                     }
-                } else {
-                    input.setText("错误");
                 }
                 break;
         }

@@ -36,10 +36,11 @@ public class CalService {
             case '*': res = num1.multiply(num2);
                 break;
             case '/':
+                int a=0;
                 if(num2.equals(0)){
                     throw (new ArithmeticException());
                 }
-                res = num1.divide(num2,16 , RoundingMode.HALF_UP);
+                res = num1.divide(num2,16 ,BigDecimal.ROUND_HALF_UP);
                 break;
         }
 

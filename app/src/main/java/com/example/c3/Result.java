@@ -14,15 +14,21 @@ public class Result {
         this.postfixExpression = postfixExpression;
     }
 
-    public String getPostfixExpression() {
-        return postfixExpression;
-    }
-
     public Stack<BigDecimal> getNumberStack() {
         return numberStack;
     }
 
     public void setNumberStack(Stack<BigDecimal> numberStack) {
         this.numberStack = numberStack;
+    }
+
+    public BigDecimal method(Stack<BigDecimal> numberStack)
+    {
+        BigDecimal bg=numberStack.peek();
+        String string = bg.toString();
+        if(string.indexOf('.')!=-1){
+            bg.stripTrailingZeros();
+        }
+        return bg;
     }
 }
