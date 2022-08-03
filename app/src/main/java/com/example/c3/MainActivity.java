@@ -3,6 +3,7 @@ package com.example.c3;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -16,6 +17,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean flag = false;
     Button zero, one, two, three, four, five, six, seven, eight, nine, close, open, del, sub, add, mul, cls, spot, equator, div;
 
+    private Boolean eq = false;
+    private Boolean eq1 = false;
+    private Boolean su = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,7 +29,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initView() {
+
         input = (TextView) findViewById(R.id.input);
+        input.setMovementMethod(ScrollingMovementMethod.getInstance());
         zero = (Button) findViewById(R.id.zero);
         one = (Button) findViewById(R.id.one);
         two = (Button) findViewById(R.id.two);
@@ -76,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String textviewContent = input.getText().toString();
         switch (v.getId()) {
             case R.id.open:
+                su = true;
+                eq = true;
                 if (textviewContent.length() != 0 && (
                         (textviewContent.charAt(textviewContent.length() - 1) >= '0'
                                 && textviewContent.charAt(textviewContent.length() - 1) <= '9')
@@ -91,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 input.setText(textviewContent);
                 flag = false;
                 break;
-            case R.id.close: {
+            case R.id.close:
                 if (textviewContent.length() != 0 && (textviewContent.charAt(textviewContent.length() - 1) == '(')) {
                     break;
                 }
@@ -107,11 +116,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 parStack.pop();
                 input.setText(textviewContent + ')');
-            }
-            break;
+                break;
             case R.id.zero:
-                if (textviewContent.length() == 1 && textviewContent.charAt(0) == '0') {
+                su = true;
+                if (eq1) {
+                    textviewContent = "";
+                    eq1 = false;
+                }
+                eq = true;
+                if (textviewContent == "") {
+                    textviewContent += "0";
                     input.setText(textviewContent);
+                    break;
+                }
+                if (textviewContent.length() == 1 && textviewContent.charAt(0) == '0') {
                     break;
                 }
                 if (textviewContent.length() != 0 && textviewContent.charAt(textviewContent.length() - 1) == ')') {
@@ -131,8 +149,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.seven:
             case R.id.eight:
             case R.id.nine:
-                if(textviewContent.length()!=0 && textviewContent.charAt(textviewContent.length()-1)==')'){
-                    textviewContent+="*"+((Button)v).getText();
+                su = true;
+                if (eq1) {
+                    textviewContent = "";
+                    eq1 = false;
+                }
+                eq = true;
+                if (textviewContent.length() != 0 && textviewContent.charAt(textviewContent.length() - 1) == ')') {
+                    textviewContent += "*" + ((Button) v).getText();
                     input.setText(textviewContent);
                     break;
                 }
@@ -143,6 +167,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 flag = true;
                 break;
             case R.id.point:
+                su = true;
+                eq1 = false;
                 if (textviewContent.length() > 0 && !dig.isDigit(textviewContent.charAt(textviewContent.length() - 1))) {
                     break;
                 }
@@ -162,6 +188,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 input.setText(textviewContent);
                 break;
             case R.id.add:
+                su = true;
+                eq1 = false;
+                if (textviewContent == "") {
+                    break;
+                }
                 if (flag == false) {
                     break;
                 }
@@ -177,6 +208,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 input.setText(textviewContent);
                 break;
             case R.id.div:
+                su = true;
+                eq1 = false;
+                if (textviewContent == "") {
+                    break;
+                }
                 if (flag == false) {
                     break;
                 }
@@ -192,6 +228,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 input.setText(textviewContent);
                 break;
             case R.id.mul:
+                su = true;
+                eq1 = false;
+                if (textviewContent == "") {
+                    break;
+                }
                 if (flag == false) {
                     break;
                 }
@@ -207,8 +248,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 input.setText(textviewContent);
                 break;
             case R.id.sub:
+
+                eq1 = false;
                 if (textviewContent.length() != 0 && textviewContent.charAt(textviewContent.length() - 1) == '(') {
                     textviewContent += "-";
+                    su = true;
                     input.setText(textviewContent);
                     break;
                 }
@@ -217,10 +261,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 || (textviewContent.charAt(textviewContent.length() - 1) == '-')
                                 || (textviewContent.charAt(textviewContent.length() - 1) == '/')
                                 || textviewContent.charAt(textviewContent.length() - 1) == '+')) {
-                    textviewContent += "(-";
-                    parStack.push('(');
-                    input.setText(textviewContent);
-                    break;
+                    if (su) {
+                        su = false;
+                        textviewContent += "(-";
+                        parStack.push('(');
+                        input.setText(textviewContent);
+                        break;
+                    } else {
+                        break;
+                    }
+
                 }
                 if (textviewContent.length() != 0 && flag == false) {
                     break;
@@ -254,9 +304,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 while (!parStack.isEmpty()) {
                     parStack.pop();
                 }
+                flag = false;
                 input.setText(textviewContent);
                 break;
             case R.id.equator:
+                if (su == false) {
+                    input.setText("错误");
+                    break;
+                }
+                eq1 = true;
+                if (eq == false) {
+                    break;
+                }
+                if (textviewContent == "") {
+                    break;
+                }
+                eq = false;
                 if (textviewContent.length() != 0 &&
                         (textviewContent.charAt(textviewContent.length() - 1) == '*')
                         || (textviewContent.charAt(textviewContent.length() - 1) == '-')
