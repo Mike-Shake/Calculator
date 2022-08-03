@@ -43,11 +43,11 @@ public class ExpressionTool {
                     isMinus = false;
                 }
                 //为了显式好看，处理double类型尾部是0的情况，直接转换成对应整数
-                if(bd.doubleValue() == bd.intValue()){
-                    bd = new BigDecimal(bd.intValue());
-                }else{
-                    bd = new BigDecimal(bd.doubleValue());
-                }
+//                if(bd.doubleValue() == bd.intValue()){
+//                    bd = new BigDecimal(bd.intValue());
+//                }else{
+//                    bd = new BigDecimal(bd.doubleValue());
+//                }
                 //将BigDecimal对象压栈
                 numberStack.push(bd);
                 //其他字符处理
