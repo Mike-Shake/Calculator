@@ -295,6 +295,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 input.setText(textviewContent);
                 break;
             case R.id.del:
+                if(textviewContent.equals("错误")){
+                    textviewContent="";
+                }
                 if (textviewContent.length() != 0) {
                     if ((textviewContent.charAt(textviewContent.length() - 1) == '*')
                             || (textviewContent.charAt(textviewContent.length() - 1) == '-')
