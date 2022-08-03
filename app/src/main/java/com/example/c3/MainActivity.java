@@ -81,10 +81,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         Character dig = '0';
         String textviewContent = input.getText().toString();
+        if(textviewContent.equals("错误")){
+            textviewContent="";
+        }
         switch (v.getId()) {
             case R.id.open:
                 su = true;
                 eq = true;
+                if (eq1) {
+                    textviewContent = "";
+                    eq1 = false;
+                }
                 if (textviewContent.length() != 0 && (
                         (textviewContent.charAt(textviewContent.length() - 1) >= '0'
                                 && textviewContent.charAt(textviewContent.length() - 1) <= '9')
@@ -156,8 +163,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 eq = true;
                 if (textviewContent.length() != 0 && textviewContent.charAt(textviewContent.length() - 1) == ')') {
-                    textviewContent += "*" + ((Button) v).getText();
-                    input.setText(textviewContent);
+                    input.setText(textviewContent + ((Button) v).getText());
                     break;
                 }
                 if (textviewContent.equals("错误")) {
@@ -248,7 +254,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 input.setText(textviewContent);
                 break;
             case R.id.sub:
-
+                if (textviewContent.length() != 0 && textviewContent.charAt(textviewContent.length() - 1) == '-') {
+                    break;
+                }
                 eq1 = false;
                 if (textviewContent.length() != 0 && textviewContent.charAt(textviewContent.length() - 1) == '(') {
                     textviewContent += "-";
@@ -258,7 +266,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 if (textviewContent.length() != 0 &&
                         ((textviewContent.charAt(textviewContent.length() - 1) == '*')
-                                || (textviewContent.charAt(textviewContent.length() - 1) == '-')
                                 || (textviewContent.charAt(textviewContent.length() - 1) == '/')
                                 || textviewContent.charAt(textviewContent.length() - 1) == '+')) {
                     if (su) {
@@ -320,6 +327,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
                 }
                 eq = false;
+                if(textviewContent.length()!=0&&textviewContent.charAt(textviewContent.length()-1)=='('){
+                    input.setText("错误");
+                    break;
+                }
                 if (textviewContent.length() != 0 &&
                         (textviewContent.charAt(textviewContent.length() - 1) == '*')
                         || (textviewContent.charAt(textviewContent.length() - 1) == '-')
@@ -340,9 +351,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         input.setText((result.getNumberStack()).peek().stripTrailingZeros().toPlainString());
                     } catch (CalException e) {
                         input.setText("错误");
-                        break;
                     } catch (ArithmeticException e) {
                         input.setText("错误");
+                    }finally{
+
                     }
                 }
                 break;
