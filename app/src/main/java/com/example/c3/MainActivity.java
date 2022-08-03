@@ -353,8 +353,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         input.setText("错误");
                     } catch (ArithmeticException e) {
                         input.setText("错误");
-                    }finally{
-
                     }
                 }
                 break;
